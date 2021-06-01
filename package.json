@@ -1,0 +1,11 @@
+{
+  "name": "letswrite-github-api-issue-create-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@toast-ui/vue-editor": "^2.5.2",
+    "dayjs": "^1.10.4",
+    "marked": "^2.0.5"
+  }
+}

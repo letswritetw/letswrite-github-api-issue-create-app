@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>GitHub API：建立 Issue、Comment – GitHub App - Augustus - Let's Write</title>
+    <link rel="canonical" href="https://letswrite.tw/github-api-issue-create-app/"/>
+    <meta property="og:url" content="https://letswritetw.github.io/letswrite-github-api-issue-create-app/"/>
+    <meta property="fb:app_id" content="911000986339138"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="Let's Write"/>
+    <meta property="og:title" content="GitHub API：建立 Issue、Comment – GitHub App - Augustus - Let's Write"/>
+    <meta itemprop="name" content="GitHub API：建立 Issue、Comment – GitHub App - Augustus - Let's Write"/>
+    <meta name="description" content="GitHub API：建立 Issue、Comment – GitHub App"/>
+    <meta property="og:description" content="GitHub API：建立 Issue、Comment – GitHub App"/>
+    <meta itemprop="description" content="GitHub API：建立 Issue、Comment – GitHub App"/>
+    <meta itemprop="image" content="https://letswritetw.github.io/letswrite-github-api-issue-create-app/fb.jpg"/>
+    <meta property="og:image" content="https://letswritetw.github.io/letswrite-github-api-issue-create-app/fb.jpg"/>
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <meta property="og:image:alt" content="GitHub API：建立 Issue、Comment – GitHub App"/>
+    <link rel="shortcut icon" href="https://letswritetw.github.io/letswritetw/dist/img/logo_512.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css"/>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
+    <link rel="stylesheet" href="dist/style.min.css"/>
+    <!-- Google Tag Manager-->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PGQ9WQT');
+    </script>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript)-->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGQ9WQT" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <div class="container" id="app">
+      <h1 class="text-center">GitHub API：<br/>建立 Issue、Comment – GitHub App</h1>
+      <hr/>
+      <h2>Issue 中所有 Comments</h2>
+      <blockquote v-if="anIssue != null">
+        <h3>{{ anIssue.title }}<a :href="anIssue.html_url" target="_blank" rel="noopener noreferrer"> {{ '#' + anIssue.number }}</a></h3>
+        <hr/>
+        <div v-html="markdownToHtml(anIssue.body)"></div>
+        <footer>
+          <cite>{{ formatTime(anIssue.updated_at) }}</cite>
+        </footer>
+      </blockquote>
+      <section>
+        <div class="card d-flex mb-16" v-for="c in anIssueComments">
+          <div class="avatar"><a class="d-block" :href="c.user.html_url" target="_blank" rel="noopener noreferrer"><img :src="c.user.avatar_url"/></a></div>
+          <div class="info">
+            <h3><a :href="c.user.html_url" target="_blank" rel="noopener noreferrer">{{ c.user.login }}</a></h3>
+            <div class="content" v-html="markdownToHtml(c.body)"></div>
+            <h6><a :href="c.html_url" target="_blank" rel="noopener noreferrer">{{ formatTime(c.updated_at) }} </a></h6>
+          </div>
+        </div>
+      </section>
+      <hr/>
+      <h2>新增留言</h2>
+      <h3>1 登入 GitHub 帳號</h3>
+      <button v-if="!afterLogin" type="button" @click="githubLogin">GitHub 登入</button>
+      <p v-else="v-else">{{ user.displayName }} 已登入</p>
+      <section v-if="afterLogin">
+        <h3>2 輸入留言內容並送出</h3>
+        <pre><code>本留言功為純為展示功能用，留言數過多時 Let's Write 會刪除。<br/>記得底部可以登出或刪除在本頁登入的 GitHub 帳號。</code></pre>
+        <editor class="mb-16" ref="editor" :options="markdownOptions"></editor>
+        <div class="text-center">
+          <button type="button" @click="submitComment">送出留言</button>
+        </div>
+        <hr/>
+        <h2>登出 / 刪除</h2>
+        <button type="button" @click="githubSignOut">登出</button>
+        <button type="button" @click="deleteUser">刪除我的帳號</button>
+      </section>
+      <hr/>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js"></script>
+    <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyDNviQAkHhPH6kKaTK79DqhRSBxDXmhnf0",
+        authDomain: "letswrite-demo-use.firebaseapp.com",
+        projectId: "letswrite-demo-use",
+        storageBucket: "letswrite-demo-use.appspot.com",
+        messagingSenderId: "75103543336",
+        appId: "1:75103543336:web:2ee4ea1e723508d787d51d",
+        measurementId: "G-9YQ090ZLST"
+      };
+      firebase.initializeApp(firebaseConfig);
+      
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="dist/main.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+- var link = 'github-api-issue-create-app'
+- var title = 'GitHub API：建立 Issue、Comment – GitHub App'
+- var description = 'GitHub API：建立 Issue、Comment – GitHub App'
+
+<!DOCTYPE html>
+html(lang="zh-TW")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
+    title #{title} - Augustus - Let's Write
+
+    link(rel="canonical", href=`https://letswrite.tw/${link}/`)
+    meta(property="og:url", content=`https://letswritetw.github.io/letswrite-${link}/`)
+
+    meta(property="fb:app_id", content="911000986339138")
+    meta(property="og:type", content="website")
+
+    meta(property="og:site_name", content="Let's Write")
+    meta(property="og:title", content=`${title} - Augustus - Let's Write`)
+    meta(itemprop="name", content=`${title} - Augustus - Let's Write`)
+
+    meta(name="description", content=description)
+    meta(property="og:description", content=description)
+    meta(itemprop="description", content=description)
+
+    meta(itemprop="image", content=`https://letswritetw.github.io/letswrite-${link}/fb.jpg`)
+    meta(property="og:image", content=`https://letswritetw.github.io/letswrite-${link}/fb.jpg`)
+    meta(property="og:image:width", content="1200")
+    meta(property="og:image:height", content="630")
+    meta(property="og:image:alt", content=title)
+
+    link(rel="shortcut icon", href="https://letswritetw.github.io/letswritetw/dist/img/logo_512.png")
+
+    //- css
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css")
+    link(rel="stylesheet", href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css")
+    link(rel="stylesheet", href="dist/style.min.css")
+
+    // Google Tag Manager
+    script.
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PGQ9WQT');
+  body
+
+    // Google Tag Manager (noscript)
+    noscript
+      iframe(src="https://www.googletagmanager.com/ns.html?id=GTM-PGQ9WQT", height="0", width="0", style="display:none;visibility:hidden")
+    
+    #app.container
+
+      h1.text-center GitHub API：<br/>建立 Issue、Comment – GitHub App
+      hr
+      //- p.text-center 筆記文：
+      //-   a(href="https://www.letswrite.tw/github-api-issue-create-app/", target="_blank") Let's Write
+
+      //- 列出所有 Comment
+      h2 Issue 中所有 Comments
+
+      //- 取得 Issue
+      blockquote(v-if="anIssue != null")
+        h3 {{ anIssue.title }}
+          a(:href="anIssue.html_url", target="_blank", rel="noopener noreferrer")  {{ '#' + anIssue.number }}
+        hr
+        div(v-html="markdownToHtml(anIssue.body)")
+        footer
+          cite {{ formatTime(anIssue.updated_at) }}
+      
+      //- 取得 Comments
+      section
+        .card.d-flex.mb-16(v-for="c in anIssueComments")
+          .avatar
+            a.d-block(:href="c.user.html_url", target="_blank", rel="noopener noreferrer")
+              img(:src="c.user.avatar_url")
+          .info
+            h3
+              a(:href="c.user.html_url", target="_blank", rel="noopener noreferrer") {{ c.user.login }}
+            .content(v-html="markdownToHtml(c.body)")
+            h6
+              a(:href="c.html_url", target="_blank", rel="noopener noreferrer") {{ formatTime(c.updated_at) }} 
+
+      hr
+
+      //- 新增 Comment
+      h2 新增留言
+      h3 1 登入 GitHub 帳號
+      button(v-if="!afterLogin", type="button", @click="githubLogin") GitHub 登入
+      p(v-else) {{ user.displayName }} 已登入
+
+      section(v-if="afterLogin")
+
+        h3 2 輸入留言內容並送出
+
+        pre
+          code 本留言功為純為展示功能用，留言數過多時 Let's Write 會刪除。<br/>記得底部可以登出或刪除在本頁登入的 GitHub 帳號。
+      
+        //- #editor
+        editor.mb-16(ref="editor", :options="markdownOptions")
+
+        .text-center
+          button(type="button", @click="submitComment") 送出留言
+
+        hr
+
+        h2 登出 / 刪除
+        button(type="button", @click="githubSignOut") 登出
+        button(type="button", @click="deleteUser") 刪除我的帳號
+      
+      hr
+
+    script(src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js")
+    script(src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js")
+    script.
+      var firebaseConfig = {
+        apiKey: "AIzaSyDNviQAkHhPH6kKaTK79DqhRSBxDXmhnf0",
+        authDomain: "letswrite-demo-use.firebaseapp.com",
+        projectId: "letswrite-demo-use",
+        storageBucket: "letswrite-demo-use.appspot.com",
+        messagingSenderId: "75103543336",
+        appId: "1:75103543336:web:2ee4ea1e723508d787d51d",
+        measurementId: "G-9YQ090ZLST"
+      };
+      firebase.initializeApp(firebaseConfig);
+    
+    script(src="https://cdn.jsdelivr.net/npm/vue@2")
+    //- script(src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js")
+    script(src="dist/main.min.js")
