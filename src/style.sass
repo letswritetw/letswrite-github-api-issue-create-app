@@ -37,6 +37,12 @@ h2 small
 .d-flex
 	display: flex
 
+.justify-between
+	justify-content: space-between
+
+.items-center
+	align-items: center
+
 .mb-16
 	margin-bottom: 1rem
 
@@ -54,8 +60,7 @@ h2 small
 	.info
 		padding-left: 1rem
 		width: 100%
-		.name
-			font-size: .7rem
+		font-size: .7rem
 	.content
 		font-size: 14px
 	h1, h2, h3, h4, h5, h6, li, p
@@ -69,15 +74,12 @@ h2 small
 		font-size: .8rem
 	h3
 		margin-top: 0
+		margin-bottom: 0
 	h6
 		margin-bottom: 0
 		text-align: right
 		a
 			color: var(--text-muted)
-
-@media screen and (max-width: 640px)
-	.card .time
-		margin-top: 1rem
 
 .avatar
 	max-width: 2.5rem
@@ -92,3 +94,7 @@ h2 small
 
 .tui-editor-contents *
 	color: #FFF !important
+
+@media screen and ( max-width: 640px )
+	h1
+		font-size: 1.5rem

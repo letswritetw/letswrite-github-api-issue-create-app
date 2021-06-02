@@ -49,7 +49,7 @@ const apiDemo = new Vue({
 
     // dayjs format 時間
     formatTime(time) {
-      return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+      return dayjs(time).format('YYYY-MM-DD')
     },
 
     // GitHub 登入
@@ -110,7 +110,7 @@ const apiDemo = new Vue({
       fetch("https://api.github.com/repos/letswritetw/letswrite-github-api-issue-create-app/issues/2/comments", this.configGet)
         .then(response => response.json())
         .then(result => {
-          this.anIssueComments = result.reverse(); // 倒序排列
+          this.anIssueComments = result;
         })
         .catch(error => console.log('error', error));
     },

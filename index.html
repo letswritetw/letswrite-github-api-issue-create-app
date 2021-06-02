@@ -55,9 +55,11 @@
         <div class="card d-flex mb-16" v-for="c in anIssueComments">
           <div class="avatar"><a class="d-block" :href="c.user.html_url" target="_blank" rel="noopener noreferrer"><img :src="c.user.avatar_url"/></a></div>
           <div class="info">
-            <h3><a class="name" :href="c.user.html_url" target="_blank" rel="noopener noreferrer">{{ c.user.login }}</a></h3>
+            <div class="d-flex justify-between items-center">
+              <h3><a class="name" :href="c.user.html_url" target="_blank" rel="noopener noreferrer">{{ c.user.login }}</a></h3>
+              <h6 class="time"><a :href="c.html_url" target="_blank" rel="noopener noreferrer">{{ formatTime(c.updated_at) }} </a></h6>
+            </div>
             <div class="content" v-html="markdownToHtml(c.body)"></div>
-            <h6 class="time"><a :href="c.html_url" target="_blank" rel="noopener noreferrer">{{ formatTime(c.updated_at) }} </a></h6>
           </div>
         </div>
       </section>

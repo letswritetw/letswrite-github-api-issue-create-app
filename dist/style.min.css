@@ -48,6 +48,14 @@ h2 small {
   display: flex;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
 .mb-16 {
   margin-bottom: 1rem;
 }
@@ -69,8 +77,6 @@ h2 small {
 .card .info {
   padding-left: 1rem;
   width: 100%;
-}
-.card .info .name {
   font-size: 0.7rem;
 }
 .card .content {
@@ -91,6 +97,7 @@ h2 small {
 }
 .card h3 {
   margin-top: 0;
+  margin-bottom: 0;
 }
 .card h6 {
   margin-bottom: 0;
@@ -100,11 +107,6 @@ h2 small {
   color: var(--text-muted);
 }
 
-@media screen and (max-width: 640px) {
-  .card .time {
-    margin-top: 1rem;
-  }
-}
 .avatar {
   max-width: 2.5rem;
 }
@@ -121,4 +123,10 @@ h2 small {
 
 .tui-editor-contents * {
   color: #FFF !important;
+}
+
+@media screen and (max-width: 640px) {
+  h1 {
+    font-size: 1.5rem;
+  }
 }

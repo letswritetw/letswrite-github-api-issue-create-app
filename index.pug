@@ -77,11 +77,12 @@ html(lang="zh-TW")
             a.d-block(:href="c.user.html_url", target="_blank", rel="noopener noreferrer")
               img(:src="c.user.avatar_url")
           .info
-            h3
-              a.name(:href="c.user.html_url", target="_blank", rel="noopener noreferrer") {{ c.user.login }}
+            .d-flex.justify-between.items-center
+              h3
+                a.name(:href="c.user.html_url", target="_blank", rel="noopener noreferrer") {{ c.user.login }}
+              h6.time
+                a(:href="c.html_url", target="_blank", rel="noopener noreferrer") {{ formatTime(c.updated_at) }} 
             .content(v-html="markdownToHtml(c.body)")
-            h6.time
-              a(:href="c.html_url", target="_blank", rel="noopener noreferrer") {{ formatTime(c.updated_at) }} 
 
       hr
 
