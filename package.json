@@ -4,8 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "@toast-ui/vue-editor": "^2.5.2",
     "dayjs": "^1.10.4",
     "marked": "^2.0.5"
+  },
+  "dependencies": {
+    "@toast-ui/vue-editor": "^3.1.3"
   }
 }

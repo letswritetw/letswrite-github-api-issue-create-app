@@ -16,24 +16,16 @@ const apiDemo = new Vue({
 
     // markdown editor options
     markdownOptions: {
-      usageStatistics: false,
+      minHeight: '200px',
+      language: 'zh-TW',
+      useCommandShortcut: true,
+      usageStatistics: true,
+      hideModeSwitch: false,
       toolbarItems: [
-        'heading',
-        'bold',
-        'italic',
-        'strike',
-        'divider',
-        'hr',
-        'quote',
-        'divider',
-        'ul',
-        'ol',
-        'task',
-        'divider',
-        'table',
-        'divider',
-        'code',
-        'codeblock'
+        ['heading', 'bold', 'italic', 'strike'],
+        ['hr', 'quote'],
+        ['ul', 'ol', 'task', 'indent', 'outdent'],
+        ['table', 'link'],
       ]
     }
   },
